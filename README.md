@@ -1,23 +1,19 @@
 An uninstaller for ClickOnce applications
 ===========================
 
-### Why?
+### Introduction
 
-Apparently, ClickOnce installations can't be removed silently. The ClickOnce uninstaller always shows a "Maintainance" dialog, requiring user interaction. 
+This project is forked from Wunder.ClickOnceUninstaller converted into .NET Class Library project. Custom action for WiX is discontinued.
 
-For [Wunderlist](http://www.6wunderkinder.com/wunderlist) 2.1 we wanted to switch from a ClickOnce deployment to a Windows Installer package using the [WiX Toolset](http://wixtoolset.org/). We wanted this switch to be integrated into our new installer, invisible to the user.
+### About ClickOnceUninStaller
 
-### What?
+Apparently, ClickOnce installations can't be removed silently. The ClickOnce uninstaller always shows a "Maintainance" dialog, requiring user interaction. We wanted this switch to be integrated into our new installer, invisible to the user.
 
-The Wunder.ClickOnceUninstaller uninstaller imitates the actions performed by the ClickOnce uninstaller, removing files, registry entries, start menu and desktop links for a given application. 
+The ClickOnceUninstaller uninstaller imitates the actions performed by the ClickOnce uninstaller, removing files, registry entries, start menu and desktop links for a given application.
 
 It automatically resolves dependencies between installed components and removes all of the applications's components which are not required by other installed ClickOnce applications.
 
-The uninstaller can be used programmatically as .NET library, through a command line interface and as custom action for a WiX setup package. 
-
-The included custom action for WiX is based on the .NET Framework 3.0 which is already shipped with Windows Vista or higher. 
-
-### How?
+### Usage
 
 ##### .NET
 
@@ -28,27 +24,10 @@ The included custom action for WiX is based on the .NET Framework 3.0 which is a
         uninstaller.Uninstall(uninstallInfo);
     }
 
-##### Command-line
+### Changes
 
-    ClickOnceUninstaller.exe "Application Name"
-
-##### WiX
-
-    <Property Id="CLICKONCEAPPNAME" Value="Application Name" />
-    
-    <CustomAction Id="UninstallClickOnce"
-                  BinaryKey="ClickOnceUninstaller"
-                  DllEntry="UninstallClickOnce"
-                  Return="ignore" />
-
-    <CustomAction Id="QuitRunningInstance"
-                  BinaryKey="WunderlistActions"
-                  DllEntry="QuitRunningInstance"
-                  Return="check" />
-
-    <InstallExecuteSequence>
-      <Custom Action="UninstallClickOnce" Before="InstallFinalize">NOT Installed</Custom>
-    </InstallExecuteSequence>
+Few improvement and tweaking done on the original project as follow:
+- Handle application with no suite folder defined. 
 
 ## License
 
