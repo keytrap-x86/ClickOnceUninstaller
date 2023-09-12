@@ -18,28 +18,27 @@ namespace Wunder.ClickOnceUninstaller
 
         public void Prepare(List<string> componentsToRemove)
         {
-            var programsFolder = Environment.GetFolderPath(Environment.SpecialFolder.Programs);
-            var folder = Path.Combine(programsFolder, _uninstallInfo.ShortcutFolderName);
-            var suiteFolder = Path.Combine(folder, _uninstallInfo.ShortcutSuiteName);
-            var shortcut = Path.Combine(suiteFolder, _uninstallInfo.ShortcutFileName + ".appref-ms");
-            var supportShortcut = Path.Combine(suiteFolder, _uninstallInfo.SupportShortcutFileName + ".url");
+            string programsFolder = Environment.GetFolderPath(Environment.SpecialFolder.Programs);
+            string folder = Path.Combine(programsFolder, _uninstallInfo.ShortcutFolderName);
+            string suiteFolder = Path.Combine(folder, _uninstallInfo.ShortcutSuiteName); //Optional
+            string desktopFolder = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
+            string desktopShortcut = Path.Combine(desktopFolder, _uninstallInfo.ShortcutFileName + ".appref-ms");
 
-            var desktopFolder = Environment.GetFolderPath(Environment.SpecialFolder.DesktopDirectory);
-            var desktopShortcut = Path.Combine(desktopFolder, _uninstallInfo.ShortcutFileName + ".appref-ms");
+            string startMenuFolder = string.IsNullOrEmpty(suiteFolder) ? folder : suiteFolder;
+
+            string shortcut = Path.Combine(startMenuFolder, _uninstallInfo.ShortcutFileName + ".appref-ms");
+            string supportShortcut = Path.Combine(startMenuFolder, _uninstallInfo.SupportShortcutFileName + ".url");
 
             _filesToRemove = new List<string>();
+            if (File.Exists(desktopShortcut)) _filesToRemove.Add(desktopShortcut);
             if (File.Exists(shortcut)) _filesToRemove.Add(shortcut);
             if (File.Exists(supportShortcut)) _filesToRemove.Add(supportShortcut);
-            if (File.Exists(desktopShortcut)) _filesToRemove.Add(desktopShortcut);
 
             _foldersToRemove = new List<string>();
-            if (Directory.Exists(suiteFolder) && Directory.GetFiles(suiteFolder).All(d => _filesToRemove.Contains(d)))
-            {
-                _foldersToRemove.Add(suiteFolder);
 
-                if (Directory.GetDirectories(folder).Count() == 1 && !Directory.GetFiles(folder).Any())
-                    _foldersToRemove.Add(folder);
-            }
+            if (startMenuFolder == suiteFolder) _foldersToRemove.Add(suiteFolder);
+            if (Directory.GetDirectories(folder).Count() == 1 && !Directory.GetFiles(folder).Any())
+                _foldersToRemove.Add(folder);
         }
 
         public void PrintDebugInformation()
@@ -47,17 +46,23 @@ namespace Wunder.ClickOnceUninstaller
             if (_foldersToRemove == null)
                 throw new InvalidOperationException("Call Prepare() first.");
 
-            var programsFolder = Environment.GetFolderPath(Environment.SpecialFolder.Programs);
+            string programsFolder = Environment.GetFolderPath(Environment.SpecialFolder.Programs);
             Console.WriteLine("Remove start menu entries from " + programsFolder);
 
-            foreach (var file in _filesToRemove)
+            if (_filesToRemove != null)
             {
-                Console.WriteLine("Delete file " + file);
+                foreach (string file in _filesToRemove)
+                {
+                    Console.WriteLine("Delete file " + file);
+                }
             }
 
-            foreach (var folder in _foldersToRemove)
+            if (_foldersToRemove != null)
             {
-                Console.WriteLine("Delete folder " + folder);
+                foreach (string folder in _foldersToRemove)
+                {
+                    Console.WriteLine("Delete folder " + folder);
+                }
             }
 
             Console.WriteLine();
@@ -70,14 +75,20 @@ namespace Wunder.ClickOnceUninstaller
 
             try
             {
-                foreach (var file in _filesToRemove)
+                if (_filesToRemove != null)
                 {
-                    File.Delete(file);
+                    foreach (string file in _filesToRemove)
+                    {
+                        File.Delete(file);
+                    }
                 }
 
-                foreach (var folder in _foldersToRemove)
+                if (_foldersToRemove != null)
                 {
-                    Directory.Delete(folder, false);
+                    foreach (string folder in _foldersToRemove)
+                    {
+                        Directory.Delete(folder, false);
+                    }
                 }
             }
             catch (IOException)

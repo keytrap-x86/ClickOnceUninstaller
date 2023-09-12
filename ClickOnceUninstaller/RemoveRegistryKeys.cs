@@ -29,17 +29,17 @@ namespace Wunder.ClickOnceUninstaller
             _keysToRemove = new List<RegistryMarker>();
             _valuesToRemove = new List<RegistryMarker>();
 
-            var componentsKey = Registry.CurrentUser.OpenSubKey(ClickOnceRegistry.ComponentsRegistryPath, true);
+            RegistryKey componentsKey = Registry.CurrentUser.OpenSubKey(ClickOnceRegistry.ComponentsRegistryPath, true);
             _disposables.Add(componentsKey);
-            foreach (var component in _registry.Components)
+            foreach (ClickOnceRegistry.Component component in _registry.Components)
             {
                 if (componentsToRemove.Contains(component.Key))
                     _keysToRemove.Add(new RegistryMarker(componentsKey, component.Key));
             }
 
-            var marksKey = Registry.CurrentUser.OpenSubKey(ClickOnceRegistry.MarksRegistryPath, true);
+            RegistryKey marksKey = Registry.CurrentUser.OpenSubKey(ClickOnceRegistry.MarksRegistryPath, true);
             _disposables.Add(marksKey);
-            foreach (var mark in _registry.Marks)
+            foreach (ClickOnceRegistry.Mark mark in _registry.Marks)
             {
                 if (componentsToRemove.Contains(mark.Key))
                 {
@@ -47,13 +47,13 @@ namespace Wunder.ClickOnceUninstaller
                 }
                 else
                 {
-                    var implications = mark.Implications.Where(i => componentsToRemove.Any(c => c == i.Name)).ToList();
+                    List<ClickOnceRegistry.Implication> implications = mark.Implications.Where(i => componentsToRemove.Any(c => c == i.Name)).ToList();
                     if (implications.Any())
                     {
-                        var markKey = marksKey.OpenSubKey(mark.Key, true);
+                        RegistryKey markKey = marksKey.OpenSubKey(mark.Key, true);
                         _disposables.Add(markKey);
 
-                        foreach (var implication in implications)
+                        foreach (ClickOnceRegistry.Implication implication in implications)
                         {
                             _valuesToRemove.Add(new RegistryMarker(markKey, implication.Key));
                         }
@@ -61,10 +61,10 @@ namespace Wunder.ClickOnceUninstaller
                 }
             }
 
-            var token = _uninstallInfo.GetPublicKeyToken();
+            string token = _uninstallInfo.GetPublicKeyToken();
 
-            var packageMetadata = Registry.CurrentUser.OpenSubKey(PackageMetadataRegistryPath);
-            foreach (var keyName in packageMetadata.GetSubKeyNames())
+            RegistryKey packageMetadata = Registry.CurrentUser.OpenSubKey(PackageMetadataRegistryPath);
+            foreach (string keyName in packageMetadata.GetSubKeyNames())
             {
                 DeleteMatchingSubKeys(PackageMetadataRegistryPath + "\\" + keyName, token);
             }
@@ -76,9 +76,9 @@ namespace Wunder.ClickOnceUninstaller
 
         private void DeleteMatchingSubKeys(string registryPath, string token)
         {
-            var key = Registry.CurrentUser.OpenSubKey(registryPath, true);
+            RegistryKey key = Registry.CurrentUser.OpenSubKey(registryPath, true);
             _disposables.Add(key);
-            foreach (var subKeyName in key.GetSubKeyNames())
+            foreach (string subKeyName in key.GetSubKeyNames())
             {
                 if (subKeyName.Contains(token))
                 {
@@ -92,12 +92,12 @@ namespace Wunder.ClickOnceUninstaller
             if (_keysToRemove == null)
                 throw new InvalidOperationException("Call Prepare() first.");
 
-            foreach (var key in _keysToRemove)
+            foreach (RegistryMarker key in _keysToRemove)
             {
                 Console.WriteLine("Delete key {0} in {1}", key.Parent, key.ItemName);
             }
 
-            foreach (var value in _valuesToRemove)
+            foreach (RegistryMarker value in _valuesToRemove)
             {
                 Console.WriteLine("Delete value {0} in {1}", value.Parent, value.ItemName);
             }
@@ -110,12 +110,12 @@ namespace Wunder.ClickOnceUninstaller
             if (_keysToRemove == null)
                 throw new InvalidOperationException("Call Prepare() first.");
 
-            foreach (var key in _keysToRemove)
+            foreach (RegistryMarker key in _keysToRemove)
             {
                 key.Parent.DeleteSubKeyTree(key.ItemName);
             }
 
-            foreach (var value in _valuesToRemove)
+            foreach (RegistryMarker value in _valuesToRemove)
             {
                 value.Parent.DeleteValue(value.ItemName);
             }

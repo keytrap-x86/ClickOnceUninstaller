@@ -20,19 +20,19 @@ namespace Wunder.ClickOnceUninstaller
         {
             Components = new List<Component>();
 
-            var components = Registry.CurrentUser.OpenSubKey(ComponentsRegistryPath);
+            Microsoft.Win32.RegistryKey components = Registry.CurrentUser.OpenSubKey(ComponentsRegistryPath);
             if (components == null) return;
 
-            foreach (var keyName in components.GetSubKeyNames())
+            foreach (string keyName in components.GetSubKeyNames())
             {
-                var componentKey = components.OpenSubKey(keyName);
+                Microsoft.Win32.RegistryKey componentKey = components.OpenSubKey(keyName);
                 if (componentKey == null) continue;
 
-                var component = new Component { Key = keyName };
+                Component component = new Component { Key = keyName };
                 Components.Add(component);
 
                 component.Dependencies = new List<string>();
-                foreach (var dependencyName in componentKey.GetSubKeyNames().Where(n => n != "Files"))
+                foreach (string dependencyName in componentKey.GetSubKeyNames().Where(n => n != "Files"))
                 {
                     component.Dependencies.Add(dependencyName);
                 }
@@ -43,28 +43,28 @@ namespace Wunder.ClickOnceUninstaller
         {
             Marks = new List<Mark>();
 
-            var marks = Registry.CurrentUser.OpenSubKey(MarksRegistryPath);
+            Microsoft.Win32.RegistryKey marks = Registry.CurrentUser.OpenSubKey(MarksRegistryPath);
             if (marks == null) return;
 
-            foreach (var keyName in marks.GetSubKeyNames())
+            foreach (string keyName in marks.GetSubKeyNames())
             {
-                var markKey = marks.OpenSubKey(keyName);
+                Microsoft.Win32.RegistryKey markKey = marks.OpenSubKey(keyName);
                 if (markKey == null) continue;
 
-                var mark = new Mark { Key = keyName };
+                Mark mark = new Mark { Key = keyName };
                 Marks.Add(mark);
 
-                var appid = markKey.GetValue("appid") as byte[];
+                byte[] appid = markKey.GetValue("appid") as byte[];
                 if (appid != null) mark.AppId = Encoding.ASCII.GetString(appid);
 
-                var identity = markKey.GetValue("identity") as byte[];
+                byte[] identity = markKey.GetValue("identity") as byte[];
                 if (identity != null) mark.Identity = Encoding.ASCII.GetString(identity);
 
                 mark.Implications = new List<Implication>();
-                var implications = markKey.GetValueNames().Where(n => n.StartsWith("implication"));
-                foreach (var implicationName in implications)
+                IEnumerable<string> implications = markKey.GetValueNames().Where(n => n.StartsWith("implication"));
+                foreach (string implicationName in implications)
                 {
-                    var implication = markKey.GetValue(implicationName) as byte[];
+                    byte[] implication = markKey.GetValue(implicationName) as byte[];
                     if (implication != null)
                         mark.Implications.Add(new Implication
                                                   {

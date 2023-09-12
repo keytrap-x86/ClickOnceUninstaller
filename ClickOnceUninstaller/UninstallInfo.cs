@@ -14,23 +14,23 @@ namespace Wunder.ClickOnceUninstaller
 
         public static UninstallInfo Find(string appName)
         {
-            var uninstall = Registry.CurrentUser.OpenSubKey(UninstallRegistryPath);
+            RegistryKey uninstall = Registry.CurrentUser.OpenSubKey(UninstallRegistryPath);
             if (uninstall != null)
             {
-                foreach (var app in uninstall.GetSubKeyNames())
+                foreach (string app in uninstall.GetSubKeyNames())
                 {
-                    var sub = uninstall.OpenSubKey(app);
+                    RegistryKey sub = uninstall.OpenSubKey(app);
                     if (sub != null && sub.GetValue("DisplayName") as string == appName)
                     {
                         return new UninstallInfo
-                                   {
-                                       Key = app,
-                                       UninstallString = sub.GetValue("UninstallString") as string,
-                                       ShortcutFolderName = sub.GetValue("ShortcutFolderName") as string,
-                                       ShortcutSuiteName = sub.GetValue("ShortcutSuiteName") as string,
-                                       ShortcutFileName = sub.GetValue("ShortcutFileName") as string,
-                                       SupportShortcutFileName = sub.GetValue("SupportShortcutFileName") as string
-                                   };
+                        {
+                            Key = app,
+                            UninstallString = sub.GetValue("UninstallString") as string,
+                            ShortcutFolderName = sub.GetValue("ShortcutFolderName") as string,
+                            ShortcutSuiteName = sub.GetValue("ShortcutSuiteName") as string,
+                            ShortcutFileName = sub.GetValue("ShortcutFileName") as string,
+                            SupportShortcutFileName = sub.GetValue("SupportShortcutFileName") as string
+                        };
                     }
                 }
             }
@@ -52,7 +52,7 @@ namespace Wunder.ClickOnceUninstaller
 
         public string GetPublicKeyToken()
         {
-            var token = UninstallString.Split(',').First(s => s.Trim().StartsWith("PublicKeyToken=")).Substring(16);
+            string token = UninstallString.Split(',').First(s => s.Trim().StartsWith("PublicKeyToken=")).Substring(16);
             if (token.Length != 16) throw new ArgumentException();
             return token;
         }
