@@ -2,9 +2,9 @@
 using System.Linq;
 using Microsoft.Win32;
 
-namespace Wunder.ClickOnceUninstaller
+namespace CodeArtEng.ClickOnceUninstaller
 {
-    public class UninstallInfo
+    internal class UninstallInfo
     {
         public const string UninstallRegistryPath = @"Software\Microsoft\Windows\CurrentVersion\Uninstall";
 

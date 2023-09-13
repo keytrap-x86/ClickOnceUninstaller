@@ -3,9 +3,9 @@ using System.Linq;
 using System.Text;
 using Microsoft.Win32;
 
-namespace Wunder.ClickOnceUninstaller
+namespace CodeArtEng.ClickOnceUninstaller
 {
-    public class ClickOnceRegistry
+    internal class ClickOnceRegistry
     {
         public const string ComponentsRegistryPath = @"Software\Classes\Software\Microsoft\Windows\CurrentVersion\Deployment\SideBySide\2.0\Components";
         public const string MarksRegistryPath = @"Software\Classes\Software\Microsoft\Windows\CurrentVersion\Deployment\SideBySide\2.0\Marks";

@@ -7,9 +7,9 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("ClickOnceUninstaller")]
 [assembly: AssemblyDescription("Programmatically uninstall ClickOnce deployed apps")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("6 Wunderkinder GmbH")]
+[assembly: AssemblyCompany("Code Art Engineering")]
 [assembly: AssemblyProduct("ClickOnceUninstaller")]
-[assembly: AssemblyCopyright("Copyright © 6 Wunderkinder GmbH 2013")]
+[assembly: AssemblyCopyright("Copyright © Code Art Engineering 2023")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 

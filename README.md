@@ -17,17 +17,14 @@ It automatically resolves dependencies between installed components and removes 
 
 ##### .NET
 
-    var uninstallInfo = UninstallInfo.Find("Application Name");
-    if (uninstallInfo == null)
-    {
-        var uninstaller = new Uninstaller();
-        uninstaller.Uninstall(uninstallInfo);
-    }
+	var uninstaller = new Uninstaller();
+	uninstaller.Uninstall("Application Name");
 
 ### Changes
 
 Few improvement and tweaking done on the original project as follow:
 - Handle application with no suite folder defined. 
+- Convert from Console Application to .NET Class Library.
 
 ## License
 

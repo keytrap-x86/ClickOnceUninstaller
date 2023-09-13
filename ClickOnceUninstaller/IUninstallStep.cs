@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace Wunder.ClickOnceUninstaller
+namespace CodeArtEng.ClickOnceUninstaller
 {
-    public interface IUninstallStep : IDisposable
+    internal interface IUninstallStep : IDisposable
     {
         void Prepare(List<string> componentsToRemove);
 

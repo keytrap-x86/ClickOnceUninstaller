@@ -1,10 +1,11 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.IO;
 
-namespace Wunder.ClickOnceUninstaller
+namespace CodeArtEng.ClickOnceUninstaller
 {
-    public class RemoveFiles : IUninstallStep
+    internal class RemoveFiles : IUninstallStep
     {
         private string _clickOnceFolder;
         private List<string> _foldersToRemove;
@@ -35,22 +36,22 @@ namespace Wunder.ClickOnceUninstaller
 
         public void PrintDebugInformation()
         {
+            Trace.WriteLine("[RemoveFiles]");
             if (string.IsNullOrEmpty(_clickOnceFolder) || !Directory.Exists(_clickOnceFolder))
                 throw new InvalidOperationException("Call Prepare() first.");
 
-            Console.WriteLine("Remove files from " + _clickOnceFolder);
+            Trace.WriteLine("Remove files from " + _clickOnceFolder);
 
             foreach (string folder in _foldersToRemove)
             {
-                Console.WriteLine("Delete folder " + folder.Substring(_clickOnceFolder.Length + 1));
+                Trace.WriteLine("Delete folder " + folder.Substring(_clickOnceFolder.Length + 1));
             }
 
             foreach (string file in _filesToRemove)
             {
-                Console.WriteLine("Delete file " + file.Substring(_clickOnceFolder.Length + 1));
+                Trace.WriteLine("Delete file " + file.Substring(_clickOnceFolder.Length + 1));
             }
 
-            Console.WriteLine();
         }
 
         public void Execute()

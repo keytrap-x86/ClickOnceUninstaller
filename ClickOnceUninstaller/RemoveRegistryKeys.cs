@@ -2,10 +2,12 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Win32;
+using System.Diagnostics;
+using System.Runtime.CompilerServices;
 
-namespace Wunder.ClickOnceUninstaller
+namespace CodeArtEng.ClickOnceUninstaller
 {
-    public class RemoveRegistryKeys : IUninstallStep
+    internal class RemoveRegistryKeys : IUninstallStep
     {
         public const string PackageMetadataRegistryPath = @"Software\Classes\Software\Microsoft\Windows\CurrentVersion\Deployment\SideBySide\2.0\PackageMetadata";
         public const string ApplicationsRegistryPath = @"Software\Classes\Software\Microsoft\Windows\CurrentVersion\Deployment\SideBySide\2.0\StateManager\Applications";
@@ -89,20 +91,19 @@ namespace Wunder.ClickOnceUninstaller
 
         public void PrintDebugInformation()
         {
+            Trace.WriteLine("[RemoveRegistryKeys]");
             if (_keysToRemove == null)
                 throw new InvalidOperationException("Call Prepare() first.");
 
             foreach (RegistryMarker key in _keysToRemove)
             {
-                Console.WriteLine("Delete key {0} in {1}", key.Parent, key.ItemName);
+                Trace.WriteLine(string.Format("Delete key {0} in {1}", key.Parent, key.ItemName));
             }
 
             foreach (RegistryMarker value in _valuesToRemove)
             {
-                Console.WriteLine("Delete value {0} in {1}", value.Parent, value.ItemName);
+                Trace.WriteLine(string.Format("Delete value {0} in {1}", value.Parent, value.ItemName));
             }
-
-            Console.WriteLine();
         }
 
         public void Execute()

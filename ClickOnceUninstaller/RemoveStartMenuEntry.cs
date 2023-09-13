@@ -1,11 +1,12 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-namespace Wunder.ClickOnceUninstaller
+namespace CodeArtEng.ClickOnceUninstaller
 {
-    public class RemoveStartMenuEntry : IUninstallStep
+    internal class RemoveStartMenuEntry : IUninstallStep
     {
         private readonly UninstallInfo _uninstallInfo;
         private List<string> _foldersToRemove;
@@ -43,17 +44,18 @@ namespace Wunder.ClickOnceUninstaller
 
         public void PrintDebugInformation()
         {
+            Trace.WriteLine("[RemoveStartMenuEntry]");
             if (_foldersToRemove == null)
                 throw new InvalidOperationException("Call Prepare() first.");
 
             string programsFolder = Environment.GetFolderPath(Environment.SpecialFolder.Programs);
-            Console.WriteLine("Remove start menu entries from " + programsFolder);
+            Trace.WriteLine("Remove start menu entries from " + programsFolder);
 
             if (_filesToRemove != null)
             {
                 foreach (string file in _filesToRemove)
                 {
-                    Console.WriteLine("Delete file " + file);
+                    Trace.WriteLine("Delete file " + file);
                 }
             }
 
@@ -61,11 +63,9 @@ namespace Wunder.ClickOnceUninstaller
             {
                 foreach (string folder in _foldersToRemove)
                 {
-                    Console.WriteLine("Delete folder " + folder);
+                    Trace.WriteLine("Delete folder " + folder);
                 }
             }
-
-            Console.WriteLine();
         }
 
         public void Execute()

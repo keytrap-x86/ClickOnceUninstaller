@@ -1,30 +1,37 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 
-namespace Wunder.ClickOnceUninstaller
+namespace CodeArtEng.ClickOnceUninstaller
 {
     public class Uninstaller
     {
         private readonly ClickOnceRegistry _registry;
 
         public Uninstaller()
-            : this(new ClickOnceRegistry())
         {
+            _registry = new ClickOnceRegistry();
         }
 
-        public Uninstaller(ClickOnceRegistry registry)
+
+        public void Uninstall(string applicationName)
         {
-            _registry = registry;
+            UninstallInfo uInfo = UninstallInfo.Find(applicationName);
+            if (uInfo == null) throw new ArgumentException("Application not found: " + applicationName);
+
+            Trace.WriteLine("Uninstalling Application: " + applicationName);
+            UninstallInt(uInfo);
+            Trace.WriteLine("Uninstall Completed.");
         }
 
-        public void Uninstall(UninstallInfo uninstallInfo)
+        internal void UninstallInt(UninstallInfo uninstallInfo)
         {
             List<string> toRemove = FindComponentsToRemove(uninstallInfo.GetPublicKeyToken());
 
-            Console.WriteLine("Components to remove:");
-            toRemove.ForEach(Console.WriteLine);
-            Console.WriteLine();
+            Debug.WriteLine("Components to remove:");
+            foreach (string n in toRemove) Debug.WriteLine(n);
+            Debug.WriteLine("");
 
             List<IUninstallStep> steps = new List<IUninstallStep>
                             {

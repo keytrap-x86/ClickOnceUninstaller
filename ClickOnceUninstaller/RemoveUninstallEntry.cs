@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using Microsoft.Win32;
 
-namespace Wunder.ClickOnceUninstaller
+namespace CodeArtEng.ClickOnceUninstaller
 {
-    public class RemoveUninstallEntry : IUninstallStep
+    internal class RemoveUninstallEntry : IUninstallStep
     {
         private readonly UninstallInfo _uninstallInfo;
         private RegistryKey _uninstall;
@@ -21,12 +22,11 @@ namespace Wunder.ClickOnceUninstaller
 
         public void PrintDebugInformation()
         {
+            Trace.WriteLine("[RemoveUninstallEntry]");
             if (_uninstall == null)
                 throw new InvalidOperationException("Call Prepare() first.");
 
-            Console.WriteLine("Remove uninstall info from " + _uninstall.OpenSubKey(_uninstallInfo.Key).Name);
-
-            Console.WriteLine();
+            Trace.WriteLine("Remove uninstall info from " + _uninstall.OpenSubKey(_uninstallInfo.Key).Name);
         }
 
         public void Execute()
