@@ -17,9 +17,8 @@ namespace CodeArtEng.ClickOnceUninstaller
 
         public void Uninstall(string applicationName)
         {
-            UninstallInfo uInfo = UninstallInfo.Find(applicationName);
-            if (uInfo == null) throw new ArgumentException("Application not found: " + applicationName);
-
+            UninstallInfo uInfo = UninstallInfo.Find(applicationName) 
+                ?? throw new ArgumentException("Application not found: " + applicationName);
             Trace.WriteLine("Uninstalling Application: " + applicationName);
             UninstallInt(uInfo);
             Trace.WriteLine("Uninstall Completed.");
